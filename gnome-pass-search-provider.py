@@ -207,7 +207,8 @@ class SearchPassService(dbus.service.Object):
             gpaste.AddPassword(name, value, dbus_interface="org.gnome.GPaste2")
         except dbus.DBusException:
             timeout = 45 # seconds
-            gpaste.AddPassword(name, value, timeout, dbus_interface="org.gnome.GPaste3")
+            # can no longer overwrite active gpaste entries with the same name
+            gpaste.AddPassword(f"{name}:{field}" if field else name, value, timeout, dbus_interface="org.gnome.GPaste3")
 
     def send_password_to_native_clipboard(self, base_args, name, field=None):
         if self.password_mode == "bw":
